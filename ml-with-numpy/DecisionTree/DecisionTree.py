@@ -41,7 +41,7 @@ class DecisionTree:
         self.epsilon_threshhold = 0.1
         self.tree={} # 保存生成的树为字典
     
-    def majorClass(labelArr):
+    def majorClass(self):
         '''
         找到当前标签集中占数目最大的标签
         :param labelArr: 标签集
@@ -50,15 +50,15 @@ class DecisionTree:
         #建立字典，用于不同类别的标签技术
         classDict = {}
         #遍历所有标签
-        for i in range(len(labelArr)):
+        for i in range(len(self)):
             #当第一次遇到A标签时，字典内还没有A标签，这时候直接幅值加1是错误的，
             #所以需要判断字典中是否有该键，没有则创建，有就直接自增
-            if labelArr[i] in classDict.keys():
+            if self[i] in classDict:
                 # 若在字典中存在该标签，则直接加1
-                classDict[labelArr[i]] += 1
+                classDict[self[i]] += 1
             else:
                 #若无该标签，设初值为1，表示出现了1次了
-                classDict[labelArr[i]] = 1
+                classDict[self[i]] = 1
         #对字典依据值进行降序排序
         classSort = sorted(classDict.items(), key=lambda x: x[1], reverse=True)
         #返回最大一项的标签，即占数目最多的标签
@@ -72,7 +72,7 @@ class DecisionTree:
         #将标签放入一个字典中，当前样本有多少类，在字典中就会有多少项
         #也相当于去重，多次出现的标签就留一次。举个例子，假如处理结束后字典的长度为1，那说明所有的样本
         #都是同一个标签，那就可以直接返回该标签了，不需要再生成子节点了。
-        classDict = {i for i in self.y_train}
+        classDict = set(self.y_train)
         #如果训练数据中所有实例属于同一类Ck，则置T为单节点数，并将Ck作为该节点的类，返回T
         #即若所有样本的标签一致，也就不需要再分化，返回标记作为该节点的值，返回后这就是一个叶子节点
         if len(classDict) == 1:

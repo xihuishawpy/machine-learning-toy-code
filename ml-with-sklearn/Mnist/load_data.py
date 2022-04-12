@@ -36,8 +36,7 @@ def __normalize_image(image):
     Returns:
         [type]: [description]
     '''
-    img = image.astype(np.float32) / 255.0
-    return img
+    return image.astype(np.float32) / 255.0
 
 
 def __one_hot_label(label):

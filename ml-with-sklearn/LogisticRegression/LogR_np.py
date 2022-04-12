@@ -60,14 +60,13 @@ class LogisticRegression:
                 error = self.y_train[i]- result
                 grad = error*self.x_train_mat[i]
                 self.theta+= self.lr*grad
-            print('LogisticRegression Model(learning_rate={},i_iter={})'.format(
-            self.lr, i_iter+1))
+            print(f'LogisticRegression Model(learning_rate={self.lr},i_iter={i_iter + 1})')
     def save(self):
         '''保存模型参数到本地文件
         '''
-        np.save(os.path.dirname(sys.argv[0])+"/theta.npy",self.theta)
+        np.save(f"{os.path.dirname(sys.argv[0])}/theta.npy", self.theta)
     def load(self):
-        self.theta=np.load(os.path.dirname(sys.argv[0])+"/theta.npy")
+        self.theta = np.load(f"{os.path.dirname(sys.argv[0])}/theta.npy")
     def test(self):
          # 错误值计数
         error_count = 0
@@ -85,9 +84,9 @@ def normalized_dataset():
     # 加载数据集，one_hot=False意思是输出标签为数字形式，比如3而不是[0,0,0,1,0,0,0,0,0,0]
     (x_train, y_train), (x_test, y_test) = load_local_mnist(one_hot=False)
     # 将w和b结合在一起，因此训练数据增加一维
-    ones_col=[[1] for i in range(len(x_train))] # 生成全为1的二维嵌套列表，即[[1],[1],...,[1]]
+    ones_col = [[1] for _ in range(len(x_train))]
     x_train_modified=np.append(x_train,ones_col,axis=1)
-    ones_col=[[1] for i in range(len(x_test))] # 生成全为1的二维嵌套列表，即[[1],[1],...,[1]]
+    ones_col = [[1] for _ in range(len(x_test))]
     x_test_modified=np.append(x_test,ones_col,axis=1)
     # Mnsit有0-9是个标记，由于是二分类任务，所以将标记0的作为1，其余为0
     # 验证过<5为1 >5为0时正确率在90%左右，猜测是因为数多了以后，可能不同数的特征较乱，不能有效地计算出一个合理的超平面

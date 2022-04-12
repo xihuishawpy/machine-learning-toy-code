@@ -83,15 +83,7 @@ class KNN:
             # 计算向量x与训练集样本x0的距离
             dist_list[i] = self._calc_dist(x0, x)
 
-        # 对距离列表排序并返回距离最近的k个训练样本的下标
-        # ----------------优化点-------------------
-        # 由于我们只取topK小的元素索引值，所以其实不需要对整个列表进行排序，而argsort是对整个
-        # 列表进行排序的，存在时间上的浪费。字典有现成的方法可以只排序top大或top小，可以自行查阅
-        # 对代码进行稍稍修改即可
-        # 这里没有对其进行优化主要原因是KNN的时间耗费大头在计算向量与向量之间的距离上，由于向量高维
-        # 所以计算时间需要很长，所以如果要提升时间，在这里优化的意义不大。
-        k_nearest_index = np.argsort(np.array(dist_list))[:self.k]  # 升序排序
-        return k_nearest_index
+        return np.argsort(np.array(dist_list))[:self.k]
 
 
     def _predict_y(self,k_nearest_index):
@@ -101,9 +93,7 @@ class KNN:
             one_hot_label=self.y_train[index]
             number_label=np.argmax(one_hot_label)
             label_list[number_label] += 1
-        # 采用投票法，即样本数最多的label就是预测的label
-        y_predict=label_list.index(max(label_list))
-        return y_predict
+        return label_list.index(max(label_list))
 
     def test(self,n_test=200):
         '''

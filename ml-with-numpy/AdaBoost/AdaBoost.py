@@ -78,7 +78,7 @@ def calc_e_Gx(trainDataArr, trainLabelArr, n, div, rule, D):
             predict.append(L)
             #如果预测错误，分类错误率要加上该分错的样本的权值（8.1式）
             if y[i] != L: e += D[i]
-        elif x[i] >= div:
+        else:
             #与上面思想一样
             predict.append(H)
             if y[i] != H: e += D[i]
@@ -100,11 +100,7 @@ def createSigleBoostingTree(trainDataArr, trainLabelArr, D):
     m, n = np.shape(trainDataArr)
     #单层树的字典，用于存放当前层提升树的参数
     #也可以认为该字典代表了一层提升树
-    sigleBoostTree = {}
-    #初始化分类误差率，分类误差率在算法8.1步骤（2）（b）有提到
-    #误差率最高也只能100%，因此初始化为1
-    sigleBoostTree['e'] = 1
-
+    sigleBoostTree = {'e': 1}
     #对每一个特征进行遍历，寻找用于划分的最合适的特征
     for i in range(n):
         #因为特征已经经过二值化，只能为0和1，因此分切分时分为-0.5， 0.5， 1.5三挡进行切割
@@ -181,7 +177,11 @@ def createBosstingTree(trainDataList, trainLabelList, treeNum = 50):
         #根据8.6式将结果加上当前层乘以α，得到目前的最终输出预测
         finallpredict += alpha * Gx
         #计算当前最终预测输出与实际标签之间的误差
-        error = sum([1 for i in range(len(trainDataList)) if np.sign(finallpredict[i]) != trainLabelArr[i]])
+        error = sum(
+            np.sign(finallpredict[i]) != trainLabelArr[i]
+            for i in range(len(trainDataList))
+        )
+
         #计算当前最终误差率
         finallError = error / len(trainDataList)
         #如果误差为0，提前退出即可，因为没有必要再计算算了
@@ -205,8 +205,7 @@ def predict(x, div, rule, feature):
     else:                   L = -1; H = 1
 
     #判断预测结果
-    if x[feature] < div: return L
-    else:   return H
+    return L if x[feature] < div else H
 
 def model_test(testDataList, testLabelList, tree):
     '''
